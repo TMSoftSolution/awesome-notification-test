@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:awesome_notification_test/notification_controller.dart';
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -24,6 +27,57 @@ class _MyAppState extends State<MyApp> {
     super.initState();
 
     NotificationsController.initializeNotificationsEventListeners();
+
+    checkNotificationPermission();
+  }
+
+  void checkNotificationPermission() {
+    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
+      if (!isAllowed) {
+        if (Platform.isAndroid) {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              title: const Text('Allow Notifications'),
+              content:
+                  const Text('Our app would like to send you notifications'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    'Don\'t Allow',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontSize: 18,
+                    ),
+                  ),
+                ),
+                TextButton(
+                    onPressed: () {
+                      AwesomeNotifications()
+                          .requestPermissionToSendNotifications()
+                          .then((allowed) {
+                        Navigator.pop(context);
+                      });
+                    },
+                    child: const Text(
+                      'Allow',
+                      style: TextStyle(
+                        color: Colors.teal,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ))
+              ],
+            ),
+          );
+        } else {
+          AwesomeNotifications().requestPermissionToSendNotifications();
+        }
+      }
+    });
   }
 
   @override
