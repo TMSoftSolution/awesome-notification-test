@@ -14,7 +14,6 @@ class NotificationsController {
         channelName: 'Daily Data Notifications',
         channelDescription: 'Daily Data Notifications',
         importance: NotificationImportance.High,
-        channelShowBadge: true,
         defaultColor: const Color(0xFF2A9D8F),
         ledColor: Colors.white,
       ),
