@@ -1,13 +1,16 @@
 import 'dart:io';
 
 import 'package:awesome_notification_test/notification_controller.dart';
-import 'package:awesome_notifications/awesome_notifications.dart';
+// Avoid to import third party packages across your app. Encapsulate them
+// with your classes, even for visual plugins. this way third party packages gonna
+// be concentrated in just one place, decreasing coupling and your app dependency.
+// import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  NotificationsController.initializeLocalNotifications();
+  await NotificationsController.initializeLocalNotifications();
 
   runApp(const MyApp());
 }
@@ -25,59 +28,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
-    NotificationsController.initializeNotificationsEventListeners();
-
-    checkNotificationPermission();
-  }
-
-  void checkNotificationPermission() {
-    AwesomeNotifications().isNotificationAllowed().then((isAllowed) {
-      if (!isAllowed) {
-        if (Platform.isAndroid) {
-          showDialog(
-            context: context,
-            builder: (context) => AlertDialog(
-              title: const Text('Allow Notifications'),
-              content:
-                  const Text('Our app would like to send you notifications'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: const Text(
-                    'Don\'t Allow',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 18,
-                    ),
-                  ),
-                ),
-                TextButton(
-                    onPressed: () {
-                      AwesomeNotifications()
-                          .requestPermissionToSendNotifications()
-                          .then((allowed) {
-                        Navigator.pop(context);
-                      });
-                    },
-                    child: const Text(
-                      'Allow',
-                      style: TextStyle(
-                        color: Colors.teal,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ))
-              ],
-            ),
-          );
-        } else {
-          AwesomeNotifications().requestPermissionToSendNotifications();
-        }
-      }
-    });
+    NotificationsController.initializeNotificationsEventListeners().then(
+          (_) => NotificationsController.checkNotificationsPermission(context));
   }
 
   @override
@@ -113,18 +65,14 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             OutlinedButton(
-                onPressed: () {
-                  NotificationsController.createDailyDataNotification();
-                },
+                onPressed: () => NotificationsController.createDailyDataNotification(context),
                 child: const Text('Schedule the Notification')),
             const SizedBox(
               height: 20,
             ),
-            OutlinedButton(
-                onPressed: () {
-                  NotificationsController.cancelScheduledNotifications();
-                },
-                child: const Text('Cancel Scheduled Notification')),
+            const OutlinedButton(
+                onPressed: NotificationsController.cancelScheduledNotifications,
+                child: Text('Cancel Scheduled Notification')),
           ],
         ),
       ),
