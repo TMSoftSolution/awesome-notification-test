@@ -107,8 +107,8 @@ class NotificationsController {
             TextButton(
                 onPressed: () async {
                   NavigatorState navigator = Navigator.of(context);
-                  isAllowed =
-                      await AwesomeNotifications().isNotificationAllowed();
+                  isAllowed = await AwesomeNotifications()
+                      .requestPermissionToSendNotifications();
                   navigator.pop();
                 },
                 child: const Text(
