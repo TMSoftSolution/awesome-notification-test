@@ -29,7 +29,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     NotificationsController.initializeNotificationsEventListeners().then(
-          (_) => NotificationsController.checkNotificationsPermission(context));
+        (_) => NotificationsController.checkNotificationsPermission(context));
   }
 
   @override
@@ -65,7 +65,8 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             OutlinedButton(
-                onPressed: () => NotificationsController.createDailyDataNotification(context),
+                onPressed: () =>
+                    NotificationsController.createDailyDataNotification(),
                 child: const Text('Schedule the Notification')),
             const SizedBox(
               height: 20,

@@ -6,8 +6,7 @@ class NotificationsController {
   //    INITIALIZATIONS
   // ***************************************************************
 
-  static const String _channelWithBadge = 'daily_data_channel_badge',
-      _channelWithoutBadge = 'daily_data_channel_no_badge';
+  static const String _channelWithBadge = 'daily_data_channel_badge';
 
   static Future<void> initializeLocalNotifications() async {
     await AwesomeNotifications()
@@ -18,15 +17,6 @@ class NotificationsController {
         channelName: 'Daily Data Notifications',
         channelDescription: 'Daily Data Notifications',
         channelShowBadge: true,
-        importance: NotificationImportance.High,
-        defaultColor: const Color(0xFF2A9D8F),
-        ledColor: Colors.white,
-      ),
-      NotificationChannel(
-        channelGroupKey: 'daily_data_channel_group',
-        channelKey: _channelWithoutBadge,
-        channelName: 'Daily Data Notifications',
-        channelDescription: 'Daily Data Notifications',
         importance: NotificationImportance.High,
         defaultColor: const Color(0xFF2A9D8F),
         ledColor: Colors.white,
@@ -76,11 +66,12 @@ class NotificationsController {
       ReceivedAction receivedAction) async {
     // Always ensure that all plugins was initialized
     WidgetsFlutterBinding.ensureInitialized();
-    await cancelScheduledNotifications();
 
     // Navigate into pages, avoiding to open the notification details page over another details page already opened
     if (receivedAction.channelKey?.startsWith('daily_data_channel_') ?? false) {
+      await cancelScheduledNotificationsByChannelKey(_channelWithBadge);
       await AwesomeNotifications().resetGlobalBadge();
+      await createDailyDataNotification();
     }
   }
 
@@ -128,19 +119,7 @@ class NotificationsController {
     return isAllowed;
   }
 
-  static Future<void> createDailyDataNotification(BuildContext context) async {
-    if (!await NotificationsController.checkNotificationsPermission(context)) {
-      return;
-    }
-    // in case you want to already display the badge counter when the schedule
-    // is created, do it instead of create an update notification
-    // await AwesomeNotifications().incrementGlobalBadgeCounter();
-    // await AwesomeNotifications().createNotification(
-    //     content: NotificationContent(
-    //         id: 10000,
-    //         channelKey: _channelWithoutBadge,
-    //         body: 'Your daily glucose analysis is ready!'),
-    //     schedule: NotificationCalendar(second: 0, repeats: true));
+  static Future<void> createDailyDataNotification() async {
     await AwesomeNotifications().createNotification(
         content: NotificationContent(
             id: 10000,
