@@ -92,8 +92,7 @@ class NotificationsController {
         context: context,
         builder: (context) => AlertDialog(
           title: const Text('Allow Notifications'),
-          content:
-          const Text('Our app would like to send you notifications'),
+          content: const Text('Our app would like to send you notifications'),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
@@ -106,24 +105,25 @@ class NotificationsController {
               ),
             ),
             TextButton(
-              onPressed: () async {
-                NavigatorState navigator = Navigator.of(context);
-                isAllowed = await AwesomeNotifications()
-                    .isNotificationAllowed();
-                navigator.pop();
-              },
-              child: const Text(
-                'Allow',
-                style: TextStyle(
-                  color: Colors.teal,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              )
-            )
+                onPressed: () async {
+                  NavigatorState navigator = Navigator.of(context);
+                  isAllowed =
+                      await AwesomeNotifications().isNotificationAllowed();
+                  navigator.pop();
+                },
+                child: const Text(
+                  'Allow',
+                  style: TextStyle(
+                    color: Colors.teal,
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ))
           ],
         ),
       );
+    } else {
+      AwesomeNotifications().requestPermissionToSendNotifications();
     }
     return isAllowed;
   }
